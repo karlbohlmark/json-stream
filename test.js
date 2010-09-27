@@ -16,6 +16,7 @@ var myObject = {
     },
     something: .2,
     "let's have a null property also" : null
+    , "an array": ["a string"]
 }
 
 var str = JSON.stringify(myObject)

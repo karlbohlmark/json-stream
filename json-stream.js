@@ -73,7 +73,14 @@ Lexer.prototype.parseToken = function(data, i){
     }else if(chr===':'){
         ++i && this.pos++
         this.emit({type:'colon'})
-    }else if(chr==="\""){
+    }else if(chr==="["){
+        ++i && this.pos++
+        this.emit({type: 'openbracket'})
+    }else if(chr==="]"){
+        ++i && this.pos++
+        this.emit({type:'closebracket'})
+    }
+    else if(chr==="\""){
         ++i && this.pos++
         this.currentTokenStart = this.pos
         this.state = 'string'
@@ -159,3 +166,32 @@ Lexer.prototype.on = function(ev, handler){
 
 
 exports.Lexer = Lexer
+
+var Parser = function(lexer){
+    this.lexer = lexer
+    this.listeners = {'token':[]}
+    var self = this
+    this.lexer.on('token', function(token){
+        self.handle(token)
+    })
+}
+
+Parser.prototype.handle = function(token){
+    
+}
+
+Parser.prototype.on = function(ev, handler){
+    if(typeof this.listeners[ev]==="undefined")
+        throw new "Event " + ev + " not supported"
+
+    this.listeners[ev].push(handler)
+}
+
+Parser.prototype.emit = function(token){
+    var handlers = this.listeners['token']
+    for(var i=0;i<handlers.length;i++){
+        handlers[i](token)
+    }
+}
+
+
